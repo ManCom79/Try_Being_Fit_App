@@ -2,12 +2,10 @@
 {
     public class VideoTraining : Training
     {
-        public int Id { get; set; }
         public double Rating { get; set; }
 
-        public VideoTraining(int id, double rating, string title, string link) : base(id, title, link)
+        public VideoTraining(int id, string title, string link, double rating) : base(id, title, link)
         {
-            Id = id;
             Rating = CalculateRating(rating);
         }
 

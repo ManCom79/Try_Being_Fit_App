@@ -4,8 +4,9 @@
     {
         public DateTime Schedule {  get; set; }
         public List<Person> trainingTrainers = new List<Person>();
+        public List<Person> trainingParticipants = new List<Person>();
 
-        public LiveTraining(DateTime schedule, List<Person> trainingTrainers, int id, string title, string link) : base(id, title, link)
+        public LiveTraining(int id, string title, string link, DateTime schedule, List<Person> trainingTrainers, List<Person> trainingParticipants) : base(id, title, link)
         {
             Schedule = schedule;
         }

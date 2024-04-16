@@ -3,6 +3,7 @@
     public enum AccountTypeEnum
     {
         Standard = 1,
-        Premium
+        Premium,
+        Trainer
     }
 }

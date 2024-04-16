@@ -11,12 +11,13 @@ namespace Models
         private string Password {  get; set; }
         public AccountTypeEnum AccountType { get; set; }
 
-        public Person(int id, string firstName, string lastName, string userName, string password, AccountTypeEnum accountType) : base(id) { 
+        public Person(string firstName, string lastName, string userName, string password, AccountTypeEnum accountType) : base() { 
             FirstName = firstName; //Validate for length > 2
             LastName = lastName; //Validate for length > 2
             UserName = userName; //Validate for length > 6
             SetPassword(password);
             AccountType = accountType;
+            ID = GetUniqueId();
         }
 
         public void SetPassword(string password)
