@@ -31,6 +31,15 @@
 
             LiveTraining live = new LiveTraining("Title", "Link", trainingDate, liveTrainer, liveParticipant);
             Console.WriteLine($"The LiveTraining title is {live.Title}, with live {live.Link} at {live.Schedule} with trainer {liveTrainer[0].FirstName} and participant {liveParticipant[0].FirstName}");
+
+            VideoTraining video = new VideoTraining("Title", "Link", 5);
+            Console.WriteLine($"The VideoTraining title is {video.Title}, with live {video.Link} with rating {video.Rating}");
+
+            video.CalculateRating(8);
+
+            Console.WriteLine($"The VideoTraining title is {video.Title}, with live {video.Link} with rating {video.Rating}");
+
+
         }
     }
 }
