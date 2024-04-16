@@ -30,7 +30,7 @@
             DateTime trainingDate = DateTime.Now.AddDays(7);
 
             LiveTraining live = new LiveTraining("Title", "Link", trainingDate, liveTrainer, liveParticipant);
-            Console.WriteLine($"The LiveTraining title is {live.Title}, with linl {live.Link} at {live.Schedule} with trainer {liveTrainer[0].FirstName} and participant {liveParticipant[0].FirstName}");
+            Console.WriteLine($"The LiveTraining title is {live.Title}, with live {live.Link} at {live.Schedule} with trainer {liveTrainer[0].FirstName} and participant {liveParticipant[0].FirstName}");
         }
     }
 }
