@@ -5,7 +5,7 @@
         public string Title { get; set; }
         public string Link { get; set; }
 
-        public Training(int id, string title, string link) : base()
+        public Training(string title, string link) : base()
         {
             Title = title;
             Link = link;

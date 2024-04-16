@@ -4,7 +4,7 @@
     {
         public double Rating { get; set; }
 
-        public VideoTraining(int id, string title, string link, double rating) : base(id, title, link)
+        public VideoTraining(int id, string title, string link, double rating) : base(title, link)
         {
             Rating = CalculateRating(rating);
         }

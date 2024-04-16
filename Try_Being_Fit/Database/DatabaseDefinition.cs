@@ -7,7 +7,5 @@ namespace Database
         public static DataTable<Person> People { get; set; } = new DataTable<Person>();
         public static DataTable<LiveTraining> LiveTrainings { get; set; } = new DataTable<LiveTraining>();
         public static DataTable<VideoTraining> VideoTrainings { get; set; } = new DataTable<VideoTraining>();
-
-        public static List<int> Ids {  get; set; } = new List<int>();
     }
 }

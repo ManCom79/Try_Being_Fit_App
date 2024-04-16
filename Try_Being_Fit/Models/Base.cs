@@ -8,17 +8,15 @@ namespace Models
     {
         public int ID { get; set; }
 
-        public Base() {
-            GetUniqueId();
+        public Base() 
+        {
+            ID = GetUniqueId();
         }
 
-
-        public int GetUniqueId()
-        {
+        public int GetUniqueId() {
             Random number = new Random();
             int uniqueId = number.Next(1, 1000);
-
-            return uniqueId;
+            return uniqueId;            
         }
     }
 }
