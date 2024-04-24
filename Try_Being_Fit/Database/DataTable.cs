@@ -16,23 +16,48 @@ namespace Database
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            T item = Items.FirstOrDefault(x => x.ID == id);
+
+            if (item != null)
+            {
+                Items.Remove(item);
+            } else
+            {
+                throw new KeyNotFoundException($"The item with ID {id} does not exist");
+            }
         }
 
         public List<T> GetAll()
         {
-            List<T> list = Items.ToList();
-            return list;
+            return Items;
         }
 
-        public void GetById(int id)
+        public T GetById(int id)
         {
-            throw new NotImplementedException();
+            T item = Items.FirstOrDefault(x => x.ID == id);
+
+            if(item == null)
+            {
+                throw new KeyNotFoundException($"Item with ID {id} does not exist!");
+            } else
+            {
+                return item;
+            }
         }
 
         public void Update(T entity)
         {
-            throw new NotImplementedException();
+            T itemToUpdate = Items.FirstOrDefault(x => x.ID == entity.ID);
+
+            if (itemToUpdate == null)
+            {
+                throw new KeyNotFoundException($"Item with ID {entity.ID} does not exist!");
+            }
+            else
+            {
+                int indexOfItemToUpdate = Items.IndexOf(itemToUpdate);
+                Items[indexOfItemToUpdate] = entity;
+            }
         }
     }
 }
