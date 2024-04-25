@@ -320,6 +320,50 @@ namespace Services.Implamentations
                     selection = CheckUserSelection(1, 4);
                     switch (selection)
                     {
+                        case 1:
+                            {
+                                Console.Clear();
+                                Console.WriteLine("What would you like to train?");
+                                int counter = 1;
+                                foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
+                                {
+                                    Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
+                                    counter++;
+                                }
+                                selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
+                                VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
+                                string selectedVideoLink = selectedVideoTrening.Link;
+                                Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Please rate the video:\n");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
+                                selection = CheckUserSelection(1, 5);
+                                selectedVideoTrening.CalculateRating(selection);
+                                Console.Clear();
+                                Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
+                                ShowMenu();
+                                break;
+                            }
+                        case 2:
+                            {
+                                int counter = 1;
+                                var allLiveTrainings = DatabaseDefinition.LiveTrainings.GetAll();
+                                Console.Clear();
+                                Console.WriteLine($"Select a training to change it's schedule (1 - {allLiveTrainings.Count()}):");
+                                foreach(var liveTraining in allLiveTrainings)
+                                {
+                                    Console.WriteLine($"{counter}. {liveTraining.Title}, {liveTraining.Schedule}");
+                                    counter++;
+                                }
+                                selection = CheckUserSelection(1, allLiveTrainings.Count());
+                                var trainingScheduleToChange = allLiveTrainings[selection - 1];
+                                trainingScheduleToChange.Schedule = GetNewDate();
+                                Console.WriteLine($"The training time is resheduled for {trainingScheduleToChange.Schedule}");
+                                ShowMenu();
+                                break;
+                            }
                         case 3:
                             {
                                 Console.Clear();
@@ -338,22 +382,6 @@ namespace Services.Implamentations
                     break;
             }
         }
-
-        public void ShowStandardUserMenu(int selection)
-        {
-
-        }
-
-        public void ShowPremiumUserMenu()
-        {
-
-        }
-
-        public void ShowTrainerMenu()
-        {
-
-        }
-
         private int CheckUserSelection(int minValue, int maxValue)
         {
             while (true)
@@ -375,6 +403,33 @@ namespace Services.Implamentations
                     return userSelection;
                 }
             }
+        }
+
+        private DateTime GetNewDate() 
+        {
+            DateTime newDate = new DateTime();
+            try
+            {
+                string sysFormat = CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern.ToString();
+                Console.WriteLine($"Please enter date in format: {sysFormat}");
+                string date = Console.ReadLine();
+
+                if (!DateTime.TryParse(date, out newDate))
+                {
+                    throw new Exception("\nPlease follow the suggested time format.\n");
+                }
+
+                if (newDate < DateTime.Now)
+                {
+                    throw new Exception("\nThe date must be in future.\n");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                GetNewDate();
+            }
+            return newDate;
         }
     }
 }

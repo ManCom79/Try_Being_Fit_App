@@ -50,6 +50,12 @@ namespace Services.Implamentations
         public void UpdgradeToPremium()
         {
             CurrentSession.CurrentUser.AccountType = Models.Enums.AccountTypeEnum.Premium;
+
+            int numberOfLiveTrainings = DatabaseDefinition.LiveTrainings.Items.Count();
+            Random randomTrainingIndex = new Random();
+            int index = randomTrainingIndex.Next(0, numberOfLiveTrainings - 1);
+            var liveVideoToAssign = DatabaseDefinition.LiveTrainings.Items[index];
+            liveVideoToAssign.TrainingParticipants.Add(CurrentSession.CurrentUser);
         }
     }
 }
