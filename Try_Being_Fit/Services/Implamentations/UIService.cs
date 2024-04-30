@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System;
 using Models;
 using System.Globalization;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Services.Implamentations
 {
@@ -176,212 +177,231 @@ namespace Services.Implamentations
 
         public void ShowMenu()
         {
-            int selection;
+            //int selection;
             switch (CurrentSession.CurrentUser.AccountType)
             {
-                case Models.Enums.AccountTypeEnum.Standard: 
-                    Console.WriteLine("1. Video training\n2. Upgrade to premium\n3. Account info\n4. Log Out");
-                    selection = CheckUserSelection(1, 4);
-                    switch (selection)
-                    {
-                        case 1:
-                            {
-                                Console.Clear();
-                                Console.WriteLine("What would you like to train?");
-                                int counter = 1;
-                                foreach(var videoTraining in DatabaseDefinition.VideoTrainings.Items)
-                                {
-                                    Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
-                                    counter++;
-                                }
-                                selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
-                                VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
-                                string selectedVideoLink = selectedVideoTrening.Link;
-                                Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine("Please rate the video:\n");
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
-                                selection = CheckUserSelection(1, 5);
-                                selectedVideoTrening.CalculateRating(selection);
-                                Console.Clear();
-                                Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
-                                ShowMenu();
-                                break;
-                            }
-                        case 2:
-                            {
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.WriteLine("WARNING!");
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.WriteLine($"Are you sure that you want to change the account type to \"Premium User\"?\n1. Yes\n2. No");
-                                selection = CheckUserSelection(1, 2);
-                                switch (selection)
-                                {
-                                    case 1:
-                                        {
-                                            Console.Clear();
-                                            _userService.UpdgradeToPremium();
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine("Welcome to the world of Premium users!");
-                                            Console.ForegroundColor = ConsoleColor.White;
-                                            ShowMenu();
-                                            break;
-                                        }
-                                    case 2:
-                                        {
-                                            ShowMenu();
-                                            break;
-                                        }
-                                }
-                                break;
-                            }
-                        case 3:
-                            {
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine(_userService.AccountInfo());
-                                Console.ForegroundColor = ConsoleColor.White;
-                                ShowMenu();
-                                break;
-                            }
-                        case 4:
-                            {
-                                _userService.LogOut();
-                                break;
-                            }
-                    }
+                case Models.Enums.AccountTypeEnum.Standard:
+                    ShowStandardUserMenu();
                     break;
                 case Models.Enums.AccountTypeEnum.Premium:
-                    Console.WriteLine("1. Video training\n2. Live training\n3. Account info\n4. Log Out");
-                    selection = CheckUserSelection(1, 4);
-                    switch (selection)
-                    {
-                        case 1:
-                            {
-                                Console.Clear();
-                                Console.WriteLine("What would you like to train?");
-                                int counter = 1;
-                                foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
-                                {
-                                    Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
-                                    counter++;
-                                }
-                                selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
-                                VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
-                                string selectedVideoLink = selectedVideoTrening.Link;
-                                Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine("Please rate the video:\n");
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
-                                selection = CheckUserSelection(1, 5);
-                                selectedVideoTrening.CalculateRating(selection);
-                                Console.Clear();
-                                Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
-                                ShowMenu();
-                                break;
-                            }
-                        case 2:
-                            {
-                                Console.Clear();
-                                List<LiveTraining> liveTrainings = DatabaseDefinition.LiveTrainings.GetAll();
-                                LiveTraining availableLiveTraining = liveTrainings.FirstOrDefault(x => x.TrainingParticipants.Any(x => x.ID == CurrentSession.CurrentUser.ID));
-                                TimeSpan timeUntilTraining = availableLiveTraining.Schedule - DateTime.Now;
-                                int totalDays = timeUntilTraining.Days;
-                                int totalHours = timeUntilTraining.Hours;
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine($"The live training {availableLiveTraining.Title} is scheduled to start at {availableLiveTraining.Schedule}.\nThere are {totalDays} days and {totalHours} hours until the training starts.");
-                                Console.ForegroundColor = ConsoleColor.White;
-                                ShowMenu();
-                                break;
-                            }
-                        case 3:
-                            {
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine(_userService.AccountInfo());
-                                Console.ForegroundColor = ConsoleColor.White;
-                                ShowMenu();
-                                break;
-                            }
-                        case 4:
-                            {
-                                _userService.LogOut();
-                                break;
-                            }
-                    }
+                    ShowPremiumUserMenu();
                     break;
                 case Models.Enums.AccountTypeEnum.Trainer:
-                    Console.WriteLine("1. Train\n2. Reschedule training\n3. Account info\n4. Log Out");
-                    selection = CheckUserSelection(1, 4);
-                    switch (selection)
-                    {
-                        case 1:
-                            {
-                                Console.Clear();
-                                Console.WriteLine("What would you like to train?");
-                                int counter = 1;
-                                foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
-                                {
-                                    Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
-                                    counter++;
-                                }
-                                selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
-                                VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
-                                string selectedVideoLink = selectedVideoTrening.Link;
-                                Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine("Please rate the video:\n");
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
-                                selection = CheckUserSelection(1, 5);
-                                selectedVideoTrening.CalculateRating(selection);
-                                Console.Clear();
-                                Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
-                                ShowMenu();
-                                break;
-                            }
-                        case 2:
-                            {
-                                int counter = 1;
-                                var allLiveTrainings = DatabaseDefinition.LiveTrainings.GetAll();
-                                Console.Clear();
-                                Console.WriteLine($"Select a training to change it's schedule (1 - {allLiveTrainings.Count()}):");
-                                foreach(var liveTraining in allLiveTrainings)
-                                {
-                                    Console.WriteLine($"{counter}. {liveTraining.Title}, {liveTraining.Schedule}");
-                                    counter++;
-                                }
-                                selection = CheckUserSelection(1, allLiveTrainings.Count());
-                                var trainingScheduleToChange = allLiveTrainings[selection - 1];
-                                trainingScheduleToChange.Schedule = GetNewDate();
-                                Console.WriteLine($"The training time is resheduled for {trainingScheduleToChange.Schedule}");
-                                ShowMenu();
-                                break;
-                            }
-                        case 3:
-                            {
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine(_userService.AccountInfo());
-                                Console.ForegroundColor = ConsoleColor.White;
-                                ShowMenu();
-                                break;
-                            }
-                        case 4:
-                            {
-                                _userService.LogOut();
-                                break;
-                            }
-                    }
+                    ShowTrainerMenu();
                     break;
             }
         }
+
+        public void ShowStandardUserMenu()
+        {
+            int selection;
+            Console.WriteLine("1. Video training\n2. Upgrade to premium\n3. Account info\n4. Log Out");
+            selection = CheckUserSelection(1, 4);
+            switch (selection)
+            {
+                case 1:
+                    {
+                        Console.Clear();
+                        Console.WriteLine("What would you like to train?");
+                        int counter = 1;
+                        foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
+                        {
+                            Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
+                            counter++;
+                        }
+                        selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
+                        VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
+                        string selectedVideoLink = selectedVideoTrening.Link;
+                        Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Please rate the video:\n");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
+                        selection = CheckUserSelection(1, 5);
+                        selectedVideoTrening.CalculateRating(selection);
+                        Console.Clear();
+                        Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
+                        ShowMenu();
+                        break;
+                    }
+                case 2:
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("WARNING!");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine($"Are you sure that you want to change the account type to \"Premium User\"?\n1. Yes\n2. No");
+                        selection = CheckUserSelection(1, 2);
+                        switch (selection)
+                        {
+                            case 1:
+                                {
+                                    Console.Clear();
+                                    _userService.UpdgradeToPremium();
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.WriteLine("Welcome to the world of Premium users!");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    ShowMenu();
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    ShowMenu();
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(_userService.AccountInfo());
+                        Console.ForegroundColor = ConsoleColor.White;
+                        ShowMenu();
+                        break;
+                    }
+                case 4:
+                    {
+                        _userService.LogOut();
+                        break;
+                    }
+            }
+        }
+
+        public void ShowPremiumUserMenu()
+        {
+            int selection;
+            Console.WriteLine("1. Video training\n2. Live training\n3. Account info\n4. Log Out");
+            selection = CheckUserSelection(1, 4);
+            switch (selection)
+            {
+                case 1:
+                    {
+                        Console.Clear();
+                        Console.WriteLine("What would you like to train?");
+                        int counter = 1;
+                        foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
+                        {
+                            Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
+                            counter++;
+                        }
+                        selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
+                        VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
+                        string selectedVideoLink = selectedVideoTrening.Link;
+                        Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Please rate the video:\n");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
+                        selection = CheckUserSelection(1, 5);
+                        selectedVideoTrening.CalculateRating(selection);
+                        Console.Clear();
+                        Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
+                        ShowMenu();
+                        break;
+                    }
+                case 2:
+                    {
+                        Console.Clear();
+                        List<LiveTraining> liveTrainings = DatabaseDefinition.LiveTrainings.GetAll();
+                        LiveTraining availableLiveTraining = liveTrainings.FirstOrDefault(x => x.TrainingParticipants.Any(x => x.ID == CurrentSession.CurrentUser.ID));
+                        TimeSpan timeUntilTraining = availableLiveTraining.Schedule - DateTime.Now;
+                        int totalDays = timeUntilTraining.Days;
+                        int totalHours = timeUntilTraining.Hours;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"The live training {availableLiveTraining.Title} is scheduled to start at {availableLiveTraining.Schedule}.\nThere are {totalDays} days and {totalHours} hours until the training starts.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        ShowMenu();
+                        break;
+                    }
+                case 3:
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(_userService.AccountInfo());
+                        Console.ForegroundColor = ConsoleColor.White;
+                        ShowMenu();
+                        break;
+                    }
+                case 4:
+                    {
+                        _userService.LogOut();
+                        break;
+                    }
+            }
+        }
+
+        public void ShowTrainerMenu()
+        {
+            int selection;
+            Console.WriteLine("1. Train\n2. Reschedule training\n3. Account info\n4. Log Out");
+            selection = CheckUserSelection(1, 4);
+            switch (selection)
+            {
+                case 1:
+                    {
+                        Console.Clear();
+                        Console.WriteLine("What would you like to train?");
+                        int counter = 1;
+                        foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
+                        {
+                            Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
+                            counter++;
+                        }
+                        selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
+                        VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
+                        string selectedVideoLink = selectedVideoTrening.Link;
+                        Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Please rate the video:\n");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
+                        selection = CheckUserSelection(1, 5);
+                        selectedVideoTrening.CalculateRating(selection);
+                        Console.Clear();
+                        Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
+                        ShowMenu();
+                        break;
+                    }
+                case 2:
+                    {
+                        int counter = 1;
+                        var allLiveTrainings = DatabaseDefinition.LiveTrainings.GetAll();
+                        Console.Clear();
+                        Console.WriteLine($"Select a training to change it's schedule (1 - {allLiveTrainings.Count()}):");
+                        foreach (var liveTraining in allLiveTrainings)
+                        {
+                            Console.WriteLine($"{counter}. {liveTraining.Title}, {liveTraining.Schedule}");
+                            counter++;
+                        }
+                        selection = CheckUserSelection(1, allLiveTrainings.Count());
+                        var trainingScheduleToChange = allLiveTrainings[selection - 1];
+                        trainingScheduleToChange.Schedule = GetNewDate();
+                        Console.WriteLine($"The training time is resheduled for {trainingScheduleToChange.Schedule}");
+                        ShowMenu();
+                        break;
+                    }
+                case 3:
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(_userService.AccountInfo());
+                        Console.ForegroundColor = ConsoleColor.White;
+                        ShowMenu();
+                        break;
+                    }
+                case 4:
+                    {
+                        _userService.LogOut();
+                        break;
+                    }
+            }
+        }
+
         private int CheckUserSelection(int minValue, int maxValue)
         {
             while (true)
