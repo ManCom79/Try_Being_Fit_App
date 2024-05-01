@@ -26,9 +26,9 @@ namespace Services.Implamentations
             Console.WriteLine("********** Welcome to FitApp! Please LogIn or Register **********");
             Console.WriteLine("1. Log in");
             Console.WriteLine("2. Register");
-            
+
             int menuSelection = CheckUserSelection(1, 2);
-            
+
             switch (menuSelection)
             {
                 case 1:
@@ -150,7 +150,7 @@ namespace Services.Implamentations
         }
         public void LogExistingUserIn()
         {
-            while(true) 
+            while (true)
             {
                 Console.WriteLine("Please enter your username:");
                 string enteredUserName = Console.ReadLine();
@@ -164,7 +164,8 @@ namespace Services.Implamentations
                 {
                     ShowWelcomeMenu();
                     break;
-                } else
+                }
+                else
                 {
                     Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -203,29 +204,7 @@ namespace Services.Implamentations
             {
                 case 1:
                     {
-                        Console.Clear();
-                        Console.WriteLine("What would you like to train?");
-                        int counter = 1;
-                        foreach (var videoTraining in _databaseDefinition.VideoTrainings.GetAll())
-                        {
-                            Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
-                            counter++;
-                        }
-                        selection = CheckUserSelection(1, _databaseDefinition.VideoTrainings.GetAll().Count());
-                        VideoTraining selectedVideoTrening = _databaseDefinition.VideoTrainings.GetAll()[selection - 1];
-                        string selectedVideoLink = selectedVideoTrening.Link;
-                        Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Please rate the video:\n");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
-                        selection = CheckUserSelection(1, 5);
-                        selectedVideoTrening.CalculateRating(selection);
-                        _databaseDefinition.VideoTrainings.Update(selectedVideoTrening);
-                        Console.Clear();
-                        Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
-                        ShowMenu();
+                        TrainMenu(selection);
                         break;
                     }
                 case 2:
@@ -258,11 +237,7 @@ namespace Services.Implamentations
                     }
                 case 3:
                     {
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(_userService.AccountInfo());
-                        Console.ForegroundColor = ConsoleColor.White;
-                        ShowMenu();
+                        AccountInfo();
                         break;
                     }
                 case 4:
@@ -282,29 +257,7 @@ namespace Services.Implamentations
             {
                 case 1:
                     {
-                        Console.Clear();
-                        Console.WriteLine("What would you like to train?");
-                        int counter = 1;
-                        foreach (var videoTraining in _databaseDefinition.VideoTrainings.GetAll())
-                        {
-                            Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
-                            counter++;
-                        }
-                        selection = CheckUserSelection(1, _databaseDefinition.VideoTrainings.GetAll().Count());
-                        VideoTraining selectedVideoTrening = _databaseDefinition.VideoTrainings.GetAll()[selection - 1];
-                        string selectedVideoLink = selectedVideoTrening.Link;
-                        Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Please rate the video:\n");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
-                        selection = CheckUserSelection(1, 5);
-                        selectedVideoTrening.CalculateRating(selection);
-                        _databaseDefinition.VideoTrainings.Update(selectedVideoTrening);
-                        Console.Clear();
-                        Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
-                        ShowMenu();
+                        TrainMenu(selection);
                         break;
                     }
                 case 2:
@@ -323,11 +276,7 @@ namespace Services.Implamentations
                     }
                 case 3:
                     {
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(_userService.AccountInfo());
-                        Console.ForegroundColor = ConsoleColor.White;
-                        ShowMenu();
+                        AccountInfo();
                         break;
                     }
                 case 4:
@@ -347,29 +296,7 @@ namespace Services.Implamentations
             {
                 case 1:
                     {
-                        Console.Clear();
-                        Console.WriteLine("What would you like to train?");
-                        int counter = 1;
-                        foreach (var videoTraining in _databaseDefinition.VideoTrainings.GetAll())
-                        {
-                            Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
-                            counter++;
-                        }
-                        selection = CheckUserSelection(1, _databaseDefinition.VideoTrainings.GetAll().Count());
-                        VideoTraining selectedVideoTrening = _databaseDefinition.VideoTrainings.GetAll()[selection - 1];
-                        string selectedVideoLink = selectedVideoTrening.Link;
-                        Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Please rate the video:\n");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
-                        selection = CheckUserSelection(1, 5);
-                        selectedVideoTrening.CalculateRating(selection);
-                        _databaseDefinition.VideoTrainings.Update(selectedVideoTrening);
-                        Console.Clear();
-                        Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
-                        ShowMenu();
+                        TrainMenu(selection);
                         break;
                     }
                 case 2:
@@ -393,11 +320,7 @@ namespace Services.Implamentations
                     }
                 case 3:
                     {
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(_userService.AccountInfo());
-                        Console.ForegroundColor = ConsoleColor.White;
-                        ShowMenu();
+                        AccountInfo();
                         break;
                     }
                 case 4:
@@ -406,6 +329,42 @@ namespace Services.Implamentations
                         break;
                     }
             }
+        }
+
+        public void TrainMenu(int selection)
+        {
+            Console.Clear();
+            Console.WriteLine("What would you like to train?");
+            int counter = 1;
+            foreach (var videoTraining in _databaseDefinition.VideoTrainings.GetAll())
+            {
+                Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
+                counter++;
+            }
+            selection = CheckUserSelection(1, _databaseDefinition.VideoTrainings.GetAll().Count());
+            VideoTraining selectedVideoTrening = _databaseDefinition.VideoTrainings.GetAll()[selection - 1];
+            string selectedVideoLink = selectedVideoTrening.Link;
+            Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Please rate the video:\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
+            selection = CheckUserSelection(1, 5);
+            selectedVideoTrening.CalculateRating(selection);
+            _databaseDefinition.VideoTrainings.Update(selectedVideoTrening);
+            Console.Clear();
+            Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
+            ShowMenu();
+        }
+
+        public void AccountInfo()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(_userService.AccountInfo());
+            Console.ForegroundColor = ConsoleColor.White;
+            ShowMenu();
         }
 
         private int CheckUserSelection(int minValue, int maxValue)
@@ -424,14 +383,15 @@ namespace Services.Implamentations
                 {
                     Console.WriteLine($"Please select value between {minValue} and {maxValue}");
                     continue;
-                } else
+                }
+                else
                 {
                     return userSelection;
                 }
             }
         }
 
-        private DateTime GetNewDate() 
+        private DateTime GetNewDate()
         {
             DateTime newDate = new DateTime();
             while (true)
@@ -457,7 +417,6 @@ namespace Services.Implamentations
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    //GetNewDate();
                 }
             }
         }
