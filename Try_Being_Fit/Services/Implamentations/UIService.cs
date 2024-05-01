@@ -386,6 +386,7 @@ namespace Services.Implamentations
                         selection = CheckUserSelection(1, allLiveTrainings.Count());
                         var trainingScheduleToChange = allLiveTrainings[selection - 1];
                         trainingScheduleToChange.Schedule = GetNewDate();
+                        _databaseDefinition.LiveTrainings.Update(trainingScheduleToChange);
                         Console.WriteLine($"The training time is resheduled for {trainingScheduleToChange.Schedule}");
                         ShowMenu();
                         break;
@@ -433,28 +434,32 @@ namespace Services.Implamentations
         private DateTime GetNewDate() 
         {
             DateTime newDate = new DateTime();
-            try
+            while (true)
             {
-                string sysFormat = CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern.ToString();
-                Console.WriteLine($"Please enter date in format: {sysFormat}");
-                string date = Console.ReadLine();
-
-                if (!DateTime.TryParse(date, out newDate))
+                try
                 {
-                    throw new Exception("\nPlease follow the suggested time format.\n");
+                    string sysFormat = CultureInfo.CurrentCulture.DateTimeFormat.FullDateTimePattern.ToString();
+                    Console.WriteLine($"Please enter date in format: {sysFormat}");
+                    string date = Console.ReadLine();
+
+                    if (!DateTime.TryParse(date, out newDate))
+                    {
+                        throw new Exception("\nPlease follow the suggested time format.\n");
+                    }
+
+                    if (newDate < DateTime.Now)
+                    {
+                        throw new Exception("\nThe date must be in future.\n");
+                    }
+
+                    return newDate;
                 }
-
-                if (newDate < DateTime.Now)
+                catch (Exception e)
                 {
-                    throw new Exception("\nThe date must be in future.\n");
+                    Console.WriteLine(e.Message);
+                    //GetNewDate();
                 }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                GetNewDate();
-            }
-            return newDate;
         }
     }
 }
