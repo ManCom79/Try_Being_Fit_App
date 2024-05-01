@@ -8,7 +8,7 @@ namespace Models
         public string LastName { get; set; }
         public string UserName { get; set; }
 
-        private string Password {  get; set; }
+        public string Password {  get; set; }
         public AccountTypeEnum AccountType { get; set; }
 
         public Person(string firstName, string lastName, string userName, string password, AccountTypeEnum accountType) : base() {
@@ -16,10 +16,6 @@ namespace Models
             LastName = lastName;
             UserName = userName;
             Password = password;
-            //SetFirstName(firstName);
-            //SetLastName(lastName);
-            //SetUserName(userName);
-            //SetPassword(password);
             AccountType = accountType;
             ID = GetUniqueId();
         }

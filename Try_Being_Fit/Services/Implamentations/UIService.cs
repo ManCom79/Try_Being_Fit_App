@@ -12,10 +12,12 @@ namespace Services.Implamentations
     public class UIService : IUIService
     {
         private IUserService _userService;
+        public DatabaseDefinition _databaseDefinition;
 
         public UIService()
         {
             _userService = new UserService();
+            _databaseDefinition = new DatabaseDefinition();
         }
 
         public void ShowWelcomeMenu()
@@ -101,7 +103,7 @@ namespace Services.Implamentations
                         throw new ArgumentException("Username should have at least 6 characters");
                     }
 
-                    var checkIfUserExist = DatabaseDefinition.People.Items.Where(x => x.UserName == userName).FirstOrDefault();
+                    var checkIfUserExist = _databaseDefinition.People.GetAll().Where(x => x.UserName == userName).FirstOrDefault();
 
                     if (checkIfUserExist != null)
                     {
@@ -204,13 +206,13 @@ namespace Services.Implamentations
                         Console.Clear();
                         Console.WriteLine("What would you like to train?");
                         int counter = 1;
-                        foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
+                        foreach (var videoTraining in _databaseDefinition.VideoTrainings.GetAll())
                         {
                             Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
                             counter++;
                         }
-                        selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
-                        VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
+                        selection = CheckUserSelection(1, _databaseDefinition.VideoTrainings.GetAll().Count());
+                        VideoTraining selectedVideoTrening = _databaseDefinition.VideoTrainings.GetAll()[selection - 1];
                         string selectedVideoLink = selectedVideoTrening.Link;
                         Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
                         Console.Clear();
@@ -220,6 +222,7 @@ namespace Services.Implamentations
                         Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
                         selection = CheckUserSelection(1, 5);
                         selectedVideoTrening.CalculateRating(selection);
+                        _databaseDefinition.VideoTrainings.Update(selectedVideoTrening);
                         Console.Clear();
                         Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
                         ShowMenu();
@@ -282,13 +285,13 @@ namespace Services.Implamentations
                         Console.Clear();
                         Console.WriteLine("What would you like to train?");
                         int counter = 1;
-                        foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
+                        foreach (var videoTraining in _databaseDefinition.VideoTrainings.GetAll())
                         {
                             Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
                             counter++;
                         }
-                        selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
-                        VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
+                        selection = CheckUserSelection(1, _databaseDefinition.VideoTrainings.GetAll().Count());
+                        VideoTraining selectedVideoTrening = _databaseDefinition.VideoTrainings.GetAll()[selection - 1];
                         string selectedVideoLink = selectedVideoTrening.Link;
                         Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
                         Console.Clear();
@@ -298,6 +301,7 @@ namespace Services.Implamentations
                         Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
                         selection = CheckUserSelection(1, 5);
                         selectedVideoTrening.CalculateRating(selection);
+                        _databaseDefinition.VideoTrainings.Update(selectedVideoTrening);
                         Console.Clear();
                         Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
                         ShowMenu();
@@ -306,7 +310,7 @@ namespace Services.Implamentations
                 case 2:
                     {
                         Console.Clear();
-                        List<LiveTraining> liveTrainings = DatabaseDefinition.LiveTrainings.GetAll();
+                        List<LiveTraining> liveTrainings = _databaseDefinition.LiveTrainings.GetAll();
                         LiveTraining availableLiveTraining = liveTrainings.FirstOrDefault(x => x.TrainingParticipants.Any(x => x.ID == CurrentSession.CurrentUser.ID));
                         TimeSpan timeUntilTraining = availableLiveTraining.Schedule - DateTime.Now;
                         int totalDays = timeUntilTraining.Days;
@@ -346,13 +350,13 @@ namespace Services.Implamentations
                         Console.Clear();
                         Console.WriteLine("What would you like to train?");
                         int counter = 1;
-                        foreach (var videoTraining in DatabaseDefinition.VideoTrainings.Items)
+                        foreach (var videoTraining in _databaseDefinition.VideoTrainings.GetAll())
                         {
                             Console.WriteLine($"{counter}. {videoTraining.Title}, Rating Score: {videoTraining.Rating}");
                             counter++;
                         }
-                        selection = CheckUserSelection(1, DatabaseDefinition.VideoTrainings.Items.Count());
-                        VideoTraining selectedVideoTrening = DatabaseDefinition.VideoTrainings.Items[selection - 1];
+                        selection = CheckUserSelection(1, _databaseDefinition.VideoTrainings.GetAll().Count());
+                        VideoTraining selectedVideoTrening = _databaseDefinition.VideoTrainings.GetAll()[selection - 1];
                         string selectedVideoLink = selectedVideoTrening.Link;
                         Process.Start("C:\\Program Files\\Internet Explorer\\IExplore.exe", selectedVideoLink);
                         Console.Clear();
@@ -362,6 +366,7 @@ namespace Services.Implamentations
                         Console.WriteLine("1.Not good\n2.Below expectations\n3.Average\n4.Good\n5.Awesome");
                         selection = CheckUserSelection(1, 5);
                         selectedVideoTrening.CalculateRating(selection);
+                        _databaseDefinition.VideoTrainings.Update(selectedVideoTrening);
                         Console.Clear();
                         Console.WriteLine($"Thanks for the rating. The updated video rating score is {selectedVideoTrening.Rating}\n");
                         ShowMenu();
@@ -370,7 +375,7 @@ namespace Services.Implamentations
                 case 2:
                     {
                         int counter = 1;
-                        var allLiveTrainings = DatabaseDefinition.LiveTrainings.GetAll();
+                        var allLiveTrainings = _databaseDefinition.LiveTrainings.GetAll();
                         Console.Clear();
                         Console.WriteLine($"Select a training to change it's schedule (1 - {allLiveTrainings.Count()}):");
                         foreach (var liveTraining in allLiveTrainings)

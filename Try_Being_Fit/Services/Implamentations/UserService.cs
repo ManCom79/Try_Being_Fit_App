@@ -6,9 +6,15 @@ namespace Services.Implamentations
 {
     public class UserService : IUserService
     {
+        public DatabaseDefinition _databaseDefinitions;
+
+        public UserService()
+        {
+            _databaseDefinitions = new DatabaseDefinition();
+        }
         public void LogIn(string userName, string password)
         {
-            var logUser = DatabaseDefinition.People.GetAll().FirstOrDefault(x => x.UserName == userName);
+            var logUser = _databaseDefinitions.People.GetAll().FirstOrDefault(x => x.UserName == userName);
             try
             {
                 if (logUser == null)
@@ -39,7 +45,7 @@ namespace Services.Implamentations
         public void RegisterNewUser(string firstName, string lastName, string userName, string password)
         {
             Person newStandardUser = new Person(firstName, lastName, userName, password, Models.Enums.AccountTypeEnum.Standard);
-            DatabaseDefinition.People.Add(newStandardUser);
+            _databaseDefinitions.People.Add(newStandardUser);
         }
 
         public string AccountInfo()
@@ -50,12 +56,19 @@ namespace Services.Implamentations
         public void UpdgradeToPremium()
         {
             CurrentSession.CurrentUser.AccountType = Models.Enums.AccountTypeEnum.Premium;
+            var loggedUser = _databaseDefinitions.People.GetById(CurrentSession.CurrentUser.ID);
+            loggedUser.AccountType = Models.Enums.AccountTypeEnum.Premium;
+            _databaseDefinitions.People.Update(loggedUser);
 
-            int numberOfLiveTrainings = DatabaseDefinition.LiveTrainings.Items.Count();
+            var allLiveTrainings = _databaseDefinitions.LiveTrainings.GetAll();
+
+            int numberOfLiveTrainings = _databaseDefinitions.LiveTrainings.GetAll().Count;
             Random randomTrainingIndex = new Random();
             int index = randomTrainingIndex.Next(0, numberOfLiveTrainings - 1);
-            var liveVideoToAssign = DatabaseDefinition.LiveTrainings.Items[index];
-            liveVideoToAssign.TrainingParticipants.Add(CurrentSession.CurrentUser);
+
+            var liveVideoToAssign = allLiveTrainings[index];
+            liveVideoToAssign.TrainingParticipants.Add(loggedUser);
+            _databaseDefinitions.LiveTrainings.Update(liveVideoToAssign);
         }
     }
 }
